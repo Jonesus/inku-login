@@ -56,7 +56,7 @@
     </div>
 
     <div class="form-row">
-      <label><input type="checkbox" name="ayy_membership_status" value=""><?php _e( 'I am a member of Aalto University Student union', 'inku-login' ); ?></label>
+      <label><input type="checkbox" name="ayy_membership_status"><?php _e( 'I am a member of Aalto University Student union', 'inku-login' ); ?></label>
     </div>
 
     <div class="form-row">&nbsp;</div>

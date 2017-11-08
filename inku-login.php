@@ -43,6 +43,7 @@ class Inku_Login_Plugin {
 		add_filter( 'admin_init' , array( $this, 'register_settings_fields' ) );
 
 		// Shortcodes
+		add_shortcode( 'account-info', array( $this, 'render_account_page' ) );
 		add_shortcode( 'custom-login-form', array( $this, 'render_login_form' ) );
 		add_shortcode( 'custom-register-form', array( $this, 'render_register_form' ) );
 		add_shortcode( 'custom-password-lost-form', array( $this, 'render_password_lost_form' ) );
@@ -256,6 +257,19 @@ class Inku_Login_Plugin {
 	//
 	// FORM RENDERING SHORTCODES
 	//
+
+	public function render_account_page( $attributes, $content = null ) {
+
+		$default_attributes = array( 'show_title' => false );
+		$attributes = shortcode_atts( $default_attributes, $attributes );
+
+		if ( !is_user_logged_in() ) {
+			return __( 'You must be signed in.', 'inku-login' );
+		}
+
+
+		return $this->get_template_html( 'account_page', $attributes );
+	}
 
 	/**
 	 * A shortcode for rendering the login form.
@@ -473,10 +487,18 @@ class Inku_Login_Plugin {
 				$first_name = sanitize_text_field( $_POST['first_name'] );
 				$last_name = sanitize_text_field( $_POST['last_name'] );
 
-				$freshman_year = sanitize_text_field( $_POST['freshman_year'] );
+				$username = sanitize_text_field( $_POST['username'] );
+				$freshman_year = sanitize_text_field( $_POST['year_started'] );
+				$city = sanitize_text_field( $_POST['city'] );
+				$membership_type = sanitize_text_field( $_POST['membership_type'] );
+				$ayy_membership_status = isset( $_POST['ayy_membership_status'] ) ? "true" : "false" ;
 
 				$meta = array(
-					'freshman_year' => $freshman_year,
+					'username'        => $username,
+					'freshman_year'   => $freshman_year,
+					'city'            => $city,
+					'membership_type' => $membership_type,
+					'ayy_member'      => $ayy_membership_status,
 				);
 
 				$result = $this->register_user( $email, $first_name, $last_name, $meta );
@@ -643,7 +665,7 @@ class Inku_Login_Plugin {
 			'user_pass'     => $password,
 			'first_name'    => $first_name,
 			'last_name'     => $last_name,
-			'nickname'      => $first_name,
+			'nickname'      => $meta['nickname'],
 		);
 
 		$user_id = wp_insert_user( $user_data );
@@ -820,6 +842,14 @@ class Inku_Login_Plugin {
 		echo '<input type="text" id="inku-login-recaptcha-secret-key" name="inku-login-recaptcha-secret-key" value="' . esc_attr( $value ) . '" />';
 	}
 
+}
+
+// Remove admin bar for non-admins
+add_action('after_setup_theme', 'remove_admin_bar');
+function remove_admin_bar() {
+  if (!current_user_can('administrator') && !is_admin()) {
+    show_admin_bar(false);
+  }
 }
 
 // Initialize the plugin
