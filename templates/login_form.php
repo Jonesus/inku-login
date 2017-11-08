@@ -32,46 +32,31 @@
 	<?php endif; ?>
 
 	<?php if ( $attributes['lost_password_sent'] ) : ?>
-		<p class="login-info">
+		<div class="alert alert-warning login-info">
 			<?php _e( 'Check your email for a link to reset your password.', 'inku-login' ); ?>
-		</p>
+			</div>
 	<?php endif; ?>
 
 	<?php if ( $attributes['password_updated'] ) : ?>
-		<p class="login-info">
+		<div class="alert alert-success login-info">
 			<?php _e( 'Your password has been changed. You can sign in now.', 'inku-login' ); ?>
-		</p>
+			</div>
 	<?php endif; ?>
 	
 
-	<!--
-	<?php
-		wp_login_form(
-			array(
-				'label_username' => __( 'Email', 'inku-login' ),
-				'label_log_in' => __( 'Sign In', 'inku-login' ),
-				'redirect' => $attributes['redirect'],
-			)
-		);
-	?>
-	-->
-
-
-	<div class="login-form-container">
-		<form method="post" action="<?php echo wp_login_url(); ?>">
-			<div class="form-row login-username">
-				<label for="user_login"><?php _e( 'Email', 'inku-login' ); ?></label>
-				<input type="text" name="log" id="user_login">
-			</div>
-			<div class="form-row login-password">
-				<label for="user_pass"><?php _e( 'Password', 'inku-login' ); ?></label>
-				<input type="password" name="pwd" id="user_pass">
-			</div>
-			<div class="form-row login-submit">
-				<input type="submit" value="<?php _e( 'Sign In', 'inku-login' ); ?>">
-			</div>
-		</form>
-	</div>
+	<form method="post" action="<?php echo wp_login_url(); ?>">
+		<div class="form-row login-username">
+			<label for="user_login"><?php _e( 'Email', 'inku-login' ); ?></label>
+			<input type="text" name="log" id="user_login">
+		</div>
+		<div class="form-row login-password">
+			<label for="user_pass"><?php _e( 'Password', 'inku-login' ); ?></label>
+			<input type="password" name="pwd" id="user_pass">
+		</div>
+		<div class="form-row login-submit">
+			<input type="submit" value="<?php _e( 'Sign In', 'inku-login' ); ?>">
+		</div>
+	</form>
 
 
 	<a class="forgot-password" href="<?php echo wp_lostpassword_url(); ?>">

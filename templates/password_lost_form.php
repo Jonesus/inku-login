@@ -21,14 +21,14 @@
 	</p>
 
 	<form id="lostpasswordform" action="<?php echo wp_lostpassword_url(); ?>" method="post">
-		<p class="form-row">
-			<label for="user_login"><?php _e( 'Email', 'inku-login' ); ?>
+		<div class="form-row">
+			<label for="user_login"><?php _e( 'Email', 'inku-login' ); ?></label>
 			<input type="text" name="user_login" id="user_login">
-		</p>
+		</div>
 
-		<p class="lostpassword-submit">
+		<div class="form-row lostpassword-submit">
 			<input type="submit" name="submit" class="lostpassword-button"
 			       value="<?php _e( 'Reset Password', 'inku-login' ); ?>"/>
-		</p>
+		</div>
 	</form>
 </div>
