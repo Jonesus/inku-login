@@ -57,23 +57,23 @@ class Inku_Login_Plugin {
 	public static function plugin_activated() {
 		// Information needed for creating the plugin's pages
 		$page_definitions = array(
-			'member-login' => array(
+			'login' => array(
 				'title' => __( 'Sign In', 'inku-login' ),
 				'content' => '[custom-login-form]'
 			),
-			'member-account' => array(
+			'account' => array(
 				'title' => __( 'Your Account', 'inku-login' ),
 				'content' => '[account-info]'
 			),
-			'member-register' => array(
+			'register' => array(
 				'title' => __( 'Register', 'inku-login' ),
 				'content' => '[custom-register-form]'
 			),
-			'member-password-lost' => array(
+			'password-lost' => array(
 				'title' => __( 'Forgot Your Password?', 'inku-login' ),
 				'content' => '[custom-password-lost-form]'
 			),
-			'member-password-reset' => array(
+			'password-reset' => array(
 				'title' => __( 'Pick a New Password', 'inku-login' ),
 				'content' => '[custom-password-reset-form]'
 			)
@@ -114,7 +114,7 @@ class Inku_Login_Plugin {
 			}
 
 			// The rest are redirected to the login page
-			$login_url = home_url( 'member-login' );
+			$login_url = home_url( 'login' );
 			if ( ! empty( $_REQUEST['redirect_to'] ) ) {
 				$login_url = add_query_arg( 'redirect_to', $_REQUEST['redirect_to'], $login_url );
 			}
@@ -144,7 +144,7 @@ class Inku_Login_Plugin {
 			if ( is_wp_error( $user ) ) {
 				$error_codes = join( ',', $user->get_error_codes() );
 
-				$login_url = home_url( 'member-login' );
+				$login_url = home_url( 'login' );
 				$login_url = add_query_arg( 'login', $error_codes, $login_url );
 
 				wp_redirect( $login_url );
@@ -180,7 +180,7 @@ class Inku_Login_Plugin {
 			}
 		} else {
 			// Non-admin users always go to their account page after login
-			$redirect_url = home_url( 'member-account' );
+			$redirect_url = home_url( 'account' );
 		}
 
 		return wp_validate_redirect( $redirect_url, home_url() );
@@ -190,7 +190,7 @@ class Inku_Login_Plugin {
 	 * Redirect to custom login page after the user has been logged out.
 	 */
 	public function redirect_after_logout() {
-		$redirect_url = home_url( 'member-login?logged_out=true' );
+		$redirect_url = home_url( 'login?logged_out=true' );
 		wp_redirect( $redirect_url );
 		exit;
 	}
@@ -204,7 +204,7 @@ class Inku_Login_Plugin {
 			if ( is_user_logged_in() ) {
 				$this->redirect_logged_in_user();
 			} else {
-				wp_redirect( home_url( 'member-register' ) );
+				wp_redirect( home_url( 'register' ) );
 			}
 			exit;
 		}
@@ -221,7 +221,7 @@ class Inku_Login_Plugin {
 				exit;
 			}
 
-			wp_redirect( home_url( 'member-password-lost' ) );
+			wp_redirect( home_url( 'password-lost' ) );
 			exit;
 		}
 	}
@@ -236,14 +236,14 @@ class Inku_Login_Plugin {
 			$user = check_password_reset_key( $_REQUEST['key'], $_REQUEST['login'] );
 			if ( ! $user || is_wp_error( $user ) ) {
 				if ( $user && $user->get_error_code() === 'expired_key' ) {
-					wp_redirect( home_url( 'member-login?login=expiredkey' ) );
+					wp_redirect( home_url( 'login?login=expiredkey' ) );
 				} else {
-					wp_redirect( home_url( 'member-login?login=invalidkey' ) );
+					wp_redirect( home_url( 'login?login=invalidkey' ) );
 				}
 				exit;
 			}
 
-			$redirect_url = home_url( 'member-password-reset' );
+			$redirect_url = home_url( 'password-reset' );
 			$redirect_url = add_query_arg( 'login', esc_attr( $_REQUEST['login'] ), $redirect_url );
 			$redirect_url = add_query_arg( 'key', esc_attr( $_REQUEST['key'] ), $redirect_url );
 
@@ -460,7 +460,7 @@ class Inku_Login_Plugin {
 	 */
 	public function do_register_user() {
 		if ( 'POST' == $_SERVER['REQUEST_METHOD'] ) {
-			$redirect_url = home_url( 'member-register' );
+			$redirect_url = home_url( 'register' );
 
 			if ( ! get_option( 'users_can_register' ) ) {
 				// Registration closed, display error
@@ -487,7 +487,7 @@ class Inku_Login_Plugin {
 					$redirect_url = add_query_arg( 'register-errors', $errors, $redirect_url );
 				} else {
 					// Success, redirect to login page.
-					$redirect_url = home_url( 'member-login' );
+					$redirect_url = home_url( 'login' );
 					$redirect_url = add_query_arg( 'registered', $email, $redirect_url );
 				}
 			}
@@ -505,11 +505,11 @@ class Inku_Login_Plugin {
 			$errors = retrieve_password();
 			if ( is_wp_error( $errors ) ) {
 				// Errors found
-				$redirect_url = home_url( 'member-password-lost' );
+				$redirect_url = home_url( 'password-lost' );
 				$redirect_url = add_query_arg( 'errors', join( ',', $errors->get_error_codes() ), $redirect_url );
 			} else {
 				// Email sent
-				$redirect_url = home_url( 'member-login' );
+				$redirect_url = home_url( 'login' );
 				$redirect_url = add_query_arg( 'checkemail', 'confirm', $redirect_url );
 				if ( ! empty( $_REQUEST['redirect_to'] ) ) {
 					$redirect_url = $_REQUEST['redirect_to'];
@@ -533,9 +533,9 @@ class Inku_Login_Plugin {
 
 			if ( ! $user || is_wp_error( $user ) ) {
 				if ( $user && $user->get_error_code() === 'expired_key' ) {
-					wp_redirect( home_url( 'member-login?login=expiredkey' ) );
+					wp_redirect( home_url( 'login?login=expiredkey' ) );
 				} else {
-					wp_redirect( home_url( 'member-login?login=invalidkey' ) );
+					wp_redirect( home_url( 'login?login=invalidkey' ) );
 				}
 				exit;
 			}
@@ -543,7 +543,7 @@ class Inku_Login_Plugin {
 			if ( isset( $_POST['pass1'] ) ) {
 				if ( $_POST['pass1'] != $_POST['pass2'] ) {
 					// Passwords don't match
-					$redirect_url = home_url( 'member-password-reset' );
+					$redirect_url = home_url( 'password-reset' );
 
 					$redirect_url = add_query_arg( 'key', $rp_key, $redirect_url );
 					$redirect_url = add_query_arg( 'login', $rp_login, $redirect_url );
@@ -555,7 +555,7 @@ class Inku_Login_Plugin {
 
 				if ( empty( $_POST['pass1'] ) ) {
 					// Password is empty
-					$redirect_url = home_url( 'member-password-reset' );
+					$redirect_url = home_url( 'password-reset' );
 
 					$redirect_url = add_query_arg( 'key', $rp_key, $redirect_url );
 					$redirect_url = add_query_arg( 'login', $rp_login, $redirect_url );
@@ -568,7 +568,7 @@ class Inku_Login_Plugin {
 
 				// Parameter checks OK, reset password
 				reset_password( $user, $_POST['pass1'] );
-				wp_redirect( home_url( 'member-login?password=changed' ) );
+				wp_redirect( home_url( 'login?password=changed' ) );
 			} else {
 				echo "Invalid request.";
 			}
@@ -706,7 +706,7 @@ class Inku_Login_Plugin {
 				wp_redirect( admin_url() );
 			}
 		} else {
-			wp_redirect( home_url( 'member-account' ) );
+			wp_redirect( home_url( 'account' ) );
 		}
 	}
 
