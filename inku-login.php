@@ -6,6 +6,7 @@
  * Author:            Jarkko Laine
  * License:           GPL-2.0+
  * Text Domain:       inku-login
+ * Domain Path:				/languages
  */
 
 class Inku_Login_Plugin {
@@ -850,6 +851,12 @@ function remove_admin_bar() {
   if (!current_user_can('administrator') && !is_admin()) {
     show_admin_bar(false);
   }
+}
+
+// Load plugin language
+add_action( 'plugins_loaded', 'load_inku_textdomain' );
+function load_inku_textdomain() {
+  load_plugin_textdomain( 'inku-login', false, basename( dirname( __FILE__ ) ) . '/languages' ); 
 }
 
 // Initialize the plugin
