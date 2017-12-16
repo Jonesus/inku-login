@@ -3,6 +3,7 @@
 $user = wp_get_current_user();
 
 $error = array();
+$success = false;
 /* If profile was saved, update profile. */
 if ( 'POST' == $_SERVER['REQUEST_METHOD'] && !empty( $_POST['action'] )) {
 
@@ -27,11 +28,18 @@ if ( 'POST' == $_SERVER['REQUEST_METHOD'] && !empty( $_POST['action'] )) {
     /* Redirect so the page will show updated info.*/
     if ( count($error) == 0 ) {
         do_action('edit_user_profile_update', $user->ID);
+        $success = true;
     }
 }
 ?>
 
 <div class="account-container">
+  
+	<?php if ( $success ) : ?>
+		<div class="alert alert-success">
+			<?php _e( 'Profile information updated!', 'inku-login' ); ?>
+		</div>
+	<?php endif; ?>
 
   <?php if ( count( $error ) > 0 ) : ?>
     <?php foreach ( $error as $e ) : ?>
