@@ -18,12 +18,16 @@ if ( 'POST' == $_SERVER['REQUEST_METHOD'] && !empty( $_POST['action'] )) {
         }
     }
 
+    if ( !empty( $_POST['username'] ) )
+        wp_update_user( array ('ID' => $user->ID, 'username' => esc_attr( $_POST['username']) ) );
     if ( !empty( $_POST['firstname'] ) )
         wp_update_user( array ('ID' => $user->ID, 'first_name' => esc_attr( $_POST['firstname']) ) );
     if ( !empty( $_POST['lastname'] ) )
         wp_update_user( array ('ID' => $user->ID, 'last_name' => esc_attr( $_POST['lastname']) ) );
     if ( !empty( $_POST['homecity'] ) )
         update_user_meta( $user->ID, 'city', esc_attr( $_POST['homecity'] ) );
+    if ( !empty( $_POST['year_started'] ) )
+        update_user_meta( $user->ID, 'freshman_year', esc_attr( $_POST['year_started'] ) );
 
     /* Redirect so the page will show updated info.*/
     if ( count($error) == 0 ) {
@@ -51,10 +55,10 @@ if ( 'POST' == $_SERVER['REQUEST_METHOD'] && !empty( $_POST['action'] )) {
 
   <?php $user = wp_get_current_user(); ?>
   <form class="form-horizontal" action="<?php the_permalink(); ?>" method="post">
-    <div class="form-row">
+    <?php /*<div class="form-row">
       <label for="username"><?php _e( 'Username', 'inku-login' ); ?></label>
-      <input type="text" name="username" id="username" value="<?php echo $user->get('username') ?>" readonly>
-    </div>
+      <input type="text" name="username" id="username" value="<?php echo $user->get('username') ?>">
+    </div>*/?>
     
     <div class="form-row">
       <label for="first_name"><?php _e( 'First name', 'inku-login' ); ?></label>
@@ -78,11 +82,13 @@ if ( 'POST' == $_SERVER['REQUEST_METHOD'] && !empty( $_POST['action'] )) {
     
     <div class="form-row">
       <label for="year_started"><?php _e( 'Freshman year', 'inku-login' ); ?></label>
-      <select type="text" name="year_started" id="year-started" readonly>
-        <option><?php echo $user->get('freshman_year') ?></option>
+      <select type="text" name="year_started" id="year-started">
+        <?php foreach ( range(intval(date("Y")), 1999) as $year ) : ?>
+          <option <?php echo ($user->get('freshman_year') == $year) ? 'selected' : ''; ?>><?php echo $year ?></option>
+        <?php endforeach; ?>
       </select>
     </div>
-    
+    <?php /*
     <div class="form-row">
       <?php _e( 'Guild membership status:', 'inku-login' ); ?> <br/>
       <?php echo $user->get('membership_type'); ?>
@@ -98,7 +104,7 @@ if ( 'POST' == $_SERVER['REQUEST_METHOD'] && !empty( $_POST['action'] )) {
       ?> <br/>
       <?php echo $status; ?>
     </div>
-
+    */ ?>
     <?php 
       do_action('edit_user_profile',$current_user); 
     ?>
